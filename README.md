@@ -1,8 +1,11 @@
 # Apartment Buying Assistant
 
 Local-first API that helps evaluate Swedish bostadsrätter: store curated buying tips, your own criteria,
-neighborhoods, housing associations (BRF) with renovation history, listings and evaluations — and compute
-the real monthly cost of a purchase.
+neighborhoods, housing associations (BRF) with renovation history, listings and evaluations — rule-based
+BRF screening, and compute the real monthly cost of a purchase.
+
+**BRF guide:** [docs/brf-evaluation-guide.md](docs/brf-evaluation-guide.md) — what to read in the årsredovisning,
+red/green flags, and viewing questions (Swedish, for non-experts).
 
 Python + FastAPI + SQLite (stdlib `sqlite3`). No auth, no cloud, no external services.
 
@@ -42,7 +45,8 @@ uv run pytest
 | Path | What |
 | --- | --- |
 | `db/schema.sql` | Schema v1: `tips`, `criteria`, `neighborhoods`, `associations`, `renovations`, `listings`, `evaluations` |
-| `db/seed.sql` | 18 Swedish BRF/bostadsrätt tips plus example criteria and neighborhoods (idempotent) |
+| `db/seed.sql` | Swedish BRF/bostadsrätt tips plus example criteria and neighborhoods (idempotent) |
+| `docs/brf-evaluation-guide.md` | Practical BRF evaluation guide (årsredovisning, thresholds, flags) |
 | `app/main.py` | FastAPI app factory |
 | `app/routers/` | One router per resource, plus `calculations` |
 | `scripts/init_db.py` | Create/seed the database |
@@ -57,6 +61,7 @@ uv run pytest
 | GET/POST | `/criteria` | `?kind=hard\|soft`; `value` is any JSON (list for operator `in`) |
 | GET/POST | `/neighborhoods` | `?municipality=` |
 | GET/POST | `/associations` | `?neighborhood_id=`; `GET /associations/{id}` includes renovations |
+| POST | `/associations/assess` | Rule-based BRF score from JSON (no DB write); see [BRF guide](docs/brf-evaluation-guide.md) |
 | GET/POST | `/associations/{id}/renovations` | kind: roof, facade, stambyte, windows, elevator, other |
 | GET/POST | `/listings` | `?status=watching\|viewed\|bid\|rejected`, `?neighborhood_id=`, `?association_id=` |
 | GET/POST | `/evaluations` | `?listing_id=`; `red_flags` is a list of strings |
