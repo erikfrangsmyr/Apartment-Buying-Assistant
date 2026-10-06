@@ -13,10 +13,19 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`).
 ```bash
 uv sync                                    # install dependencies
 uv run python scripts/init_db.py           # create data/apartment.db and load seed data
-uv run uvicorn app.main:app --port 8765 --reload
+uv run python scripts/serve.py --reload    # serves on http://127.0.0.1:8642
 ```
 
-Open the interactive docs at http://127.0.0.1:8765/docs.
+Open the interactive docs at http://127.0.0.1:8642/docs.
+
+The default port is **8642**. Override it with the `--port` flag or the `APP_PORT` env var (the flag wins):
+
+```bash
+uv run python scripts/serve.py --port 9123
+APP_PORT=9123 uv run python scripts/serve.py
+```
+
+`--host` / `APP_HOST` changes the bind address (default `127.0.0.1`).
 
 The app also creates and seeds the database on startup if it doesn't exist, so the init script is optional.
 Use `scripts/init_db.py --reset` to start over, `--no-seed` for empty tables, or `--db PATH` / the
@@ -37,6 +46,7 @@ uv run pytest
 | `app/main.py` | FastAPI app factory |
 | `app/routers/` | One router per resource, plus `calculations` |
 | `scripts/init_db.py` | Create/seed the database |
+| `scripts/serve.py` | Run the API (`--port` / `APP_PORT`, default 8642) |
 | `tests/` | pytest suite (uses a temporary database) |
 
 ## API
@@ -58,7 +68,7 @@ return `409`; invalid input returns `422`.
 ### Monthly cost
 
 ```bash
-curl -s -X POST http://127.0.0.1:8765/calculations/monthly-cost \
+curl -s -X POST http://127.0.0.1:8642/calculations/monthly-cost \
   -H 'content-type: application/json' \
   -d '{"price": 4000000, "down_payment": 600000, "interest_rate": 3.5, "monthly_fee": 4000, "operating_costs": 800}'
 ```
