@@ -3,8 +3,11 @@ import sqlite3
 from fastapi import APIRouter, Depends
 
 from app.db import fetch_all, fetch_one, get_db, insert
+from app.brf_assess import assess_brf
 from app.models import (
     Association,
+    AssociationAssessRequest,
+    AssociationAssessResponse,
     AssociationCreate,
     AssociationDetail,
     Renovation,
@@ -12,6 +15,12 @@ from app.models import (
 )
 
 router = APIRouter(prefix="/associations", tags=["associations"])
+
+
+@router.post("/assess", response_model=AssociationAssessResponse)
+def assess_association(body: AssociationAssessRequest):
+    """Rule-based BRF screening from association-like JSON (no database write)."""
+    return assess_brf(body)
 
 
 @router.get("", response_model=list[Association])

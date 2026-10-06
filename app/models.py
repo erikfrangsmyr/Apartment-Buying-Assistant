@@ -69,7 +69,10 @@ class AssociationCreate(BaseModel):
     total_debt: int | None = Field(default=None, ge=0)
     debt_per_sqm: int | None = Field(default=None, ge=0)
     cash_balance: int | None = None
-    owns_land: bool | None = None
+    owns_land: bool | None = Field(
+        default=None,
+        description="True = äganderätt till marken; false = tomträtt (hyr marken)",
+    )
     tomtratt_fee: int | None = Field(default=None, ge=0)
     is_genuine: bool | None = Field(default=None, description="Äkta förening")
     planned_works: str | None = None
@@ -83,6 +86,47 @@ class Association(AssociationCreate):
 
 class AssociationDetail(Association):
     renovations: list[Renovation]
+
+
+class RenovationAssessInput(BaseModel):
+    kind: RenovationKind
+    year: int | None = Field(default=None, ge=1600, le=2100)
+    status: Literal["done", "planned"]
+    cost_estimate: int | None = Field(default=None, ge=0)
+    notes: str | None = None
+
+
+class AssociationAssessRequest(BaseModel):
+    """Association-like payload for rule-based BRF screening (not persisted)."""
+
+    name: str | None = None
+    built_year: int | None = Field(default=None, ge=1600, le=2100)
+    num_apartments: int | None = Field(default=None, gt=0)
+    total_debt: int | None = Field(default=None, ge=0)
+    debt_per_sqm: int | None = Field(default=None, ge=0)
+    cash_balance: int | None = None
+    owns_land: bool | None = Field(
+        default=None,
+        description="True = äganderätt till marken; false = tomträtt (hyr marken)",
+    )
+    tomtratt_fee: int | None = Field(default=None, ge=0)
+    is_genuine: bool | None = Field(default=None, description="Äkta förening")
+    planned_works: str | None = None
+    notes: str | None = None
+    management_brand: str | None = Field(
+        default=None, description="Förvaltare, t.ex. HSB, Riksbyggen, SBC"
+    )
+    rental_units_count: int | None = Field(default=None, ge=0)
+    only_bostadsratter: bool | None = None
+    renovations: list[RenovationAssessInput] = Field(default_factory=list)
+
+
+class AssociationAssessResponse(BaseModel):
+    economy_score: float = Field(ge=0, le=100)
+    red_flags: list[str]
+    green_flags: list[str]
+    summary: str
+    questions_to_ask: list[str]
 
 
 class ListingCreate(BaseModel):
