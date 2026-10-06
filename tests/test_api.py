@@ -49,15 +49,15 @@ def test_criteria_json_value_roundtrip(client):
     })
     assert res.status_code == 201
     assert res.json()["value"] is True
-    assert len(client.get("/criteria", params={"kind": "soft"}).json()) == 4
+    assert len(client.get("/criteria", params={"kind": "soft"}).json()) == 18
 
 
 def test_neighborhoods(client):
-    assert len(client.get("/neighborhoods").json()) == 2
-    res = client.post("/neighborhoods", json={"name": "Aspudden", "municipality": "Stockholm", "rating": 5})
+    assert len(client.get("/neighborhoods").json()) == 25
+    res = client.post("/neighborhoods", json={"name": "Testområde", "municipality": "Stockholm", "rating": 5})
     assert res.status_code == 201
     assert client.post("/neighborhoods", json={"name": "X", "municipality": "Y", "rating": 9}).status_code == 422
-    assert len(client.get("/neighborhoods", params={"municipality": "Stockholm"}).json()) == 2
+    assert len(client.get("/neighborhoods", params={"municipality": "Stockholm"}).json()) == 16
 
 
 def make_association(client, **overrides):

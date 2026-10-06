@@ -27,7 +27,7 @@ def test_seed_is_idempotent(tmp_path):
     init_db(path)
     c = connect(path)
     assert c.execute("SELECT COUNT(*) FROM tips").fetchone()[0] >= 15
-    assert c.execute("SELECT COUNT(*) FROM neighborhoods").fetchone()[0] == 2
+    assert c.execute("SELECT COUNT(*) FROM neighborhoods").fetchone()[0] == 25
     c.close()
 
 
