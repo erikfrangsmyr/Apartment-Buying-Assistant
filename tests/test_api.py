@@ -111,7 +111,8 @@ def test_listings_and_evaluations(client):
     listing = res.json()
     assert listing["status"] == "watching"
     assert client.post("/listings", json={"address": "X", "status": "sold"}).status_code == 422
-    assert len(client.get("/listings", params={"status": "watching"}).json()) == 1
+    watching = client.get("/listings", params={"status": "watching"}).json()
+    assert any(l["address"] == "Eksätravägen 12" for l in watching)
     assert client.get("/listings", params={"status": "bid"}).json() == []
 
     res = client.post("/evaluations", json={

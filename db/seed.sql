@@ -134,3 +134,72 @@ INSERT OR IGNORE INTO criteria (name, kind, field, operator, value, weight, note
 ('Tvättutrymme i badrum', 'soft', 'laundry_space_in_bathroom', '=', 'true', 2, 'Plats för tvätt i minst ett badrum.'),
 ('Värdlägenhet i BRF', 'soft', 'brf_guest_apartment', '=', 'true', 2, 'Gästlägenhet i föreningen.'),
 ('Nära bad-/simvatten', 'soft', 'near_swimming_water', '=', 'true', 3, 'Badplats eller simmöjlighet i närheten.');
+
+-- Brf Nyckeln i Nacka + Diligensvägen 4 (idempotent via org_number / address)
+INSERT INTO associations (
+    name, org_number, neighborhood_id, built_year, num_apartments,
+    debt_per_sqm, owns_land, is_genuine, last_report_year, notes
+)
+SELECT
+    'Brf Nyckeln i Nacka',
+    '716418-6871',
+    n.id,
+    1988,
+    172,
+    5626,
+    1,
+    1,
+    2025,
+    'Förvaltning: Nabo (ekonomi/drift); städning trapphus/tvättstuga HSB Stockholm. Årsredovisning 2025 (Länsfäst/Nabo).'
+FROM neighborhoods n
+WHERE n.name = 'Järlaberg' AND n.municipality = 'Nacka'
+  AND NOT EXISTS (SELECT 1 FROM associations WHERE org_number = '716418-6871');
+
+INSERT INTO renovations (association_id, kind, year, status, notes)
+SELECT a.id, 'roof', 2026, 'planned', 'Takrenovering (planerat 2026).'
+FROM associations a
+WHERE a.org_number = '716418-6871'
+  AND NOT EXISTS (
+    SELECT 1 FROM renovations r
+    WHERE r.association_id = a.id AND r.kind = 'roof' AND r.status = 'planned' AND r.year = 2026
+  );
+
+INSERT INTO renovations (association_id, kind, year, status, notes)
+SELECT a.id, 'facade', 2026, 'planned', 'Fasad och mjukfogar 2026–2030.'
+FROM associations a
+WHERE a.org_number = '716418-6871'
+  AND NOT EXISTS (
+    SELECT 1 FROM renovations r
+    WHERE r.association_id = a.id AND r.kind = 'facade' AND r.status = 'planned' AND r.year = 2026
+  );
+
+INSERT INTO renovations (association_id, kind, year, status, notes)
+SELECT a.id, 'stambyte', 2037, 'planned', 'Förstudie stambyte (planerat 2037).'
+FROM associations a
+WHERE a.org_number = '716418-6871'
+  AND NOT EXISTS (
+    SELECT 1 FROM renovations r
+    WHERE r.association_id = a.id AND r.kind = 'stambyte' AND r.status = 'planned' AND r.year = 2037
+  );
+
+INSERT INTO listings (
+    association_id, neighborhood_id, address, url, price, rooms, area_sqm,
+    monthly_fee, floor, status, notes
+)
+SELECT
+    a.id,
+    n.id,
+    'Diligensvägen 4',
+    'https://www.lansfast.se/till-salu/bostadsratt/stockholm/nacka/nacka/diligensvagen-4/cmbolgh5cqbugd6ef1r26sp/',
+    3495000,
+    3,
+    76,
+    5927,
+    2,
+    'watching',
+    'Jarlaberg. Utgångspris 3 495 000 kr. Visningar 11–12 okt 2026 (Länsfäst). Inglasad balkong, vindsförråd, våning 2/3 hiss.'
+FROM associations a
+CROSS JOIN neighborhoods n
+WHERE a.org_number = '716418-6871'
+  AND n.name = 'Järlaberg' AND n.municipality = 'Nacka'
+  AND NOT EXISTS (SELECT 1 FROM listings WHERE address = 'Diligensvägen 4');

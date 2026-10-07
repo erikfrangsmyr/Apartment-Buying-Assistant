@@ -11,12 +11,28 @@ Python + FastAPI + SQLite (stdlib `sqlite3`). No auth, no cloud, no external ser
 
 ## Run locally
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`). Windows (no WSL): see [docs/local-dev.md](docs/local-dev.md).
 
 ```bash
 uv sync                                    # install dependencies
 uv run python scripts/init_db.py           # create data/apartment.db and load seed data
 uv run python scripts/serve.py --reload    # serves on http://127.0.0.1:8642
+```
+
+### Workflow: one listing
+
+After you pull changes that update `db/seed.sql` (e.g. a new object like Diligensvägen 4), refresh your local DB and start the API. **Run each line separately** — never paste documentation arrows (`→`) or chained commands as a single shell line (e.g. `git pull uv run ... --reset` will break).
+
+```bash
+git pull
+uv run python scripts/init_db.py --reset
+uv run python scripts/serve.py
+```
+
+Then evaluate a listing (replace `ID` with the listing id from `GET /listings`):
+
+```bash
+curl -s -X POST http://127.0.0.1:8642/listings/ID/evaluate | jq
 ```
 
 Open the interactive docs at http://127.0.0.1:8642/docs.
@@ -64,6 +80,7 @@ uv run pytest
 | POST | `/associations/assess` | Rule-based BRF score from JSON (no DB write); see [BRF guide](docs/brf-evaluation-guide.md) |
 | GET/POST | `/associations/{id}/renovations` | kind: roof, facade, stambyte, windows, elevator, other |
 | GET/POST | `/listings` | `?status=watching\|viewed\|bid\|rejected`, `?neighborhood_id=`, `?association_id=` |
+| POST | `/listings/{id}/evaluate` | Score listing vs `criteria`; optional BRF assess; writes `evaluations` |
 | GET/POST | `/evaluations` | `?listing_id=`; `red_flags` is a list of strings |
 | POST | `/calculations/monthly-cost` | See below |
 
