@@ -7,6 +7,8 @@ from starlette.requests import Request
 from starlette.responses import HTMLResponse, Response
 
 SHARE_TOKEN_ENV_KEYS = ("SHARE_TOKEN", "APP_SHARE_TOKEN")
+SHARE_COOKIE_NAME = "aba_share"
+SHARE_COOKIE_MAX_AGE = 60 * 60 * 24 * 30  # 30 days
 
 TOKEN_HINT_HTML = """<!DOCTYPE html>
 <html lang="sv">
@@ -48,6 +50,8 @@ def _token_from_request(request: Request) -> str | None:
 
 
 def _is_protected_path(path: str) -> bool:
+    if path in ("/", "/ui"):
+        return True
     return path == "/app" or path.startswith("/app/") or path.startswith("/static/")
 
 
@@ -76,11 +80,27 @@ class ShareAuthMiddleware(BaseHTTPMiddleware):
         if not _is_protected_path(request.url.path):
             return await call_next(request)
 
-        if tokens_match(expected, _token_from_request(request)):
-            return await call_next(request)
+        provided = _token_from_request(request)
+        cookie = request.cookies.get(SHARE_COOKIE_NAME)
+        authorized = tokens_match(expected, provided) or tokens_match(expected, cookie)
 
-        accept = request.headers.get("accept", "")
-        if request.url.path.startswith("/app") and "text/html" in accept:
-            return HTMLResponse(TOKEN_HINT_HTML, status_code=403)
+        if not authorized:
+            accept = request.headers.get("accept", "")
+            if (
+                request.url.path.startswith("/app")
+                or request.url.path == "/"
+            ) and "text/html" in accept:
+                return HTMLResponse(TOKEN_HINT_HTML, status_code=403)
+            return Response(status_code=403)
 
-        return Response(status_code=403)
+        response = await call_next(request)
+        if tokens_match(expected, provided) and not tokens_match(expected, cookie):
+            response.set_cookie(
+                SHARE_COOKIE_NAME,
+                expected,
+                httponly=True,
+                samesite="lax",
+                max_age=SHARE_COOKIE_MAX_AGE,
+                path="/",
+            )
+        return response
