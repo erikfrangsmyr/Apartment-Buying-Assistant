@@ -50,3 +50,9 @@ def test_api_listings_open_without_token(share_client):
 
 def test_no_token_middleware_unchanged(client):
     assert client.get("/app").status_code == 200
+
+
+def test_cookie_allows_navigation_without_query_token(share_client):
+    share_client.get(f"/app?token={TOKEN}")
+    assert share_client.get("/app/jamfor").status_code == 200
+    assert share_client.get("/static/css/style.css").status_code == 200
