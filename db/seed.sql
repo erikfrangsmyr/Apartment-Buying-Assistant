@@ -184,7 +184,7 @@ WHERE a.org_number = '716418-6871'
 
 INSERT INTO listings (
     association_id, neighborhood_id, address, url, price, rooms, area_sqm,
-    monthly_fee, floor, status, notes
+    monthly_fee, floor, status, interest, notes
 )
 SELECT
     a.id,
@@ -197,9 +197,31 @@ SELECT
     5927,
     2,
     'watching',
-    'Jarlaberg. Utgångspris 3 495 000 kr. Visningar 11–12 okt 2026 (Länsfäst). Inglasad balkong, vindsförråd, våning 2/3 hiss.'
+    'interested',
+    'Jarlaberg. Utgångspris 3 495 000 kr. Visningar 11–12 okt 2026 (Länsfäst). Inglasad balkong, vindsförråd, våning 2/3 hiss. Booli: https://www.booli.se/bostad/4209955'
 FROM associations a
 CROSS JOIN neighborhoods n
 WHERE a.org_number = '716418-6871'
   AND n.name = 'Järlaberg' AND n.municipality = 'Nacka'
   AND NOT EXISTS (SELECT 1 FROM listings WHERE address = 'Diligensvägen 4');
+
+INSERT INTO listings (
+    association_id, neighborhood_id, address, url, price, rooms, area_sqm,
+    monthly_fee, floor, status, interest, notes
+)
+SELECT
+    NULL,
+    n.id,
+    'Landåvägen 77',
+    'https://www.booli.se/annons/6252361',
+    2995000,
+    3,
+    75,
+    7488,
+    NULL,
+    'watching',
+    'love',
+    'Jarlaberg. Booli annons/6252361. Inglasad balkong. Diskmaskin och tvättmaskin i lägenheten (annons). Starkt alternativ till Diligensvägen.'
+FROM neighborhoods n
+WHERE n.name = 'Järlaberg' AND n.municipality = 'Nacka'
+  AND NOT EXISTS (SELECT 1 FROM listings WHERE address = 'Landåvägen 77');

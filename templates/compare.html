@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Jämför objekt — Bostadsköp{% endblock %}
+{% block content %}
+<h1>Jämför objekt</h1>
+<p class="lead">Välj upp till fyra sparade objekt och jämför hårda kriterier, BRF-poäng och ungefärlig månadskostnad (15&nbsp;% kontant, 3,5&nbsp;% ränta).</p>
+
+{% if show_watchlist_hint %}
+<div class="card watchlist-hint">
+  <p><strong>Få in hela Booli-watchlistan:</strong> efter att PR med <code>import_watchlist.py</code> är mergad, kör <code>uv run python scripts/import_watchlist.py</code> (ev. efter <code>uv run python scripts/init_db.py --reset</code>). Då kan du jämföra Landåvägen och övriga ❤-objekt här.</p>
+</div>
+{% endif %}
+
+{% if listings|length < 2 %}
+<p class="empty">Minst två objekt behövs för jämförelse. Importera watchlistan eller lägg till fler via API.</p>
+{% endif %}
+
+<form id="compare-form" class="card compare-picker">
+  <h2>Välj objekt</h2>
+  <ul class="compare-checklist">
+    {% for l in listings %}
+    <li>
+      <label>
+        <input type="checkbox" name="listing_id" value="{{ l.id }}"
+          {% if l.id in default_ids %}checked{% endif %}
+          data-address="{{ l.address }}">
+        <span class="compare-item-label">
+          {% if l.interest_badge %}<span class="interest-badge" title="{{ l.interest_label }}">{{ l.interest_badge }}</span>{% endif %}
+          <strong>{{ l.address }}</strong>
+          <span class="muted">{% if l.price_fmt %}{{ l.price_fmt }}{% else %}pris saknas{% endif %}</span>
+        </span>
+      </label>
+    </li>
+    {% endfor %}
+  </ul>
+  <p class="muted">Max fyra objekt i tabellen.</p>
+  <div class="form-actions">
+    <button type="submit" class="button primary" id="compare-btn">Jämför</button>
+  </div>
+</form>
+
+<div id="compare-result" hidden></div>
+<div id="compare-error" class="flag-red" hidden></div>
+{% endblock %}
+{% block scripts %}
+<script>
+  window.COMPARE_DEFAULT_IDS = {{ default_ids | tojson }};
+  window.COMPARE_AUTO = {{ (default_ids|length <= 3 and default_ids|length >= 1) | tojson }};
+</script>
+<script src="/static/js/compare.js"></script>
+{% endblock %}

@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.db import fetch_all, fetch_one, get_db, insert
 from app.listing_evaluate import evaluate_listing
-from app.models import Listing, ListingCreate, ListingEvaluateResponse, ListingStatus
+from app.models import Listing, ListingCreate, ListingEvaluateResponse, ListingInterest, ListingStatus
 
 router = APIRouter(prefix="/listings", tags=["listings"])
 
@@ -13,11 +13,17 @@ router = APIRouter(prefix="/listings", tags=["listings"])
 @router.get("", response_model=list[Listing])
 def list_listings(
     status: ListingStatus | None = None,
+    interest: ListingInterest | None = None,
     neighborhood_id: int | None = None,
     association_id: int | None = None,
     conn: sqlite3.Connection = Depends(get_db),
 ):
-    filters = {"status": status, "neighborhood_id": neighborhood_id, "association_id": association_id}
+    filters = {
+        "status": status,
+        "interest": interest,
+        "neighborhood_id": neighborhood_id,
+        "association_id": association_id,
+    }
     return fetch_all(conn, "listings", filters, order_by="created_at DESC, id DESC")
 
 

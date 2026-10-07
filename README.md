@@ -19,7 +19,7 @@ uv run python scripts/init_db.py           # create data/apartment.db and load s
 uv run python scripts/serve.py --reload    # serves on http://127.0.0.1:8642
 ```
 
-Open **http://127.0.0.1:8642/app** in your browser for the web UI (listings, utvärdering, månadskostnad).
+Open **http://127.0.0.1:8642/app** in your browser for the web UI (listings, utvärdering, månadskostnad, **jämför** på `/app/jamfor`).
 The start page is http://127.0.0.1:8642/ — API docs remain at `/docs`.
 
 ### Workflow: one listing
