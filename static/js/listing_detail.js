@@ -1,4 +1,62 @@
 (function () {
+  const form = document.getElementById("listing-edit-form");
+  const editStatus = document.getElementById("edit-status");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const listingId = form.dataset.listingId;
+      const fd = new FormData(form);
+      const payload = {};
+      for (const [key, value] of fd.entries()) {
+        const raw = String(value).trim();
+        if (key === "interest" && !raw) {
+          payload.interest = null;
+          continue;
+        }
+        if (["price", "monthly_fee", "floor"].includes(key)) {
+          payload[key] = raw === "" ? null : Number(raw);
+          continue;
+        }
+        if (["rooms", "area_sqm"].includes(key)) {
+          payload[key] = raw === "" ? null : parseFloat(raw);
+          continue;
+        }
+        if (key === "url") {
+          payload.url = raw || null;
+          continue;
+        }
+        if (key === "notes") {
+          payload.notes = raw || null;
+          continue;
+        }
+        payload[key] = raw;
+      }
+      const saveBtn = document.getElementById("btn-save-listing");
+      saveBtn.disabled = true;
+      editStatus.hidden = false;
+      editStatus.textContent = "Sparar…";
+      try {
+        const res = await fetch(`/listings/${listingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || res.statusText);
+        }
+        editStatus.textContent = "Sparat.";
+        window.setTimeout(() => {
+          window.location.reload();
+        }, 400);
+      } catch (err) {
+        editStatus.textContent = "Fel: " + (err.message || "kunde inte spara");
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+  }
+
   const btn = document.getElementById("btn-evaluate");
   const statusEl = document.getElementById("evaluate-status");
   const resultEl = document.getElementById("evaluate-result");

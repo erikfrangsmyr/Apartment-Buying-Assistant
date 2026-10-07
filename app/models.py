@@ -150,6 +150,29 @@ class Listing(ListingCreate):
     created_at: str
 
 
+class ListingUpdate(BaseModel):
+    association_id: int | None = None
+    neighborhood_id: int | None = None
+    address: str | None = Field(default=None, min_length=1)
+    url: str | None = None
+    price: int | None = Field(default=None, ge=0)
+    rooms: float | None = Field(default=None, gt=0)
+    area_sqm: float | None = Field(default=None, gt=0)
+    monthly_fee: int | None = Field(default=None, ge=0)
+    floor: int | None = None
+    status: ListingStatus | None = None
+    interest: ListingInterest | None = None
+    notes: str | None = None
+
+
+class ListingEnrichResponse(BaseModel):
+    listing_id: int
+    ok: bool
+    reason: str | None = None
+    updated_fields: list[str] = Field(default_factory=list)
+    facts: dict[str, Any] = Field(default_factory=dict)
+
+
 class EvaluationCreate(BaseModel):
     listing_id: int
     criteria_score: float | None = Field(default=None, ge=0, le=100)
