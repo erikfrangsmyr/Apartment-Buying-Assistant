@@ -11,7 +11,7 @@ Python + FastAPI + SQLite (stdlib `sqlite3`). No auth, no cloud, no external ser
 
 ## Run locally
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`). Windows (no WSL): see [docs/local-dev.md](docs/local-dev.md).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`). Windows (no WSL): see [docs/local-dev.md](docs/local-dev.md). **Desktop shortcut:** [docs/windows-desktop-shortcut.md](docs/windows-desktop-shortcut.md).
 
 ```bash
 uv sync                                    # install dependencies

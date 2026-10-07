@@ -1,0 +1,11 @@
+# Copy to share.local.ps1 (gitignored) and edit.
+# Used by scripts/start-app.ps1 and create-desktop-shortcut.ps1
+
+# Optional share token for /app (same as APP_SHARE_TOKEN when using --share)
+$AppShareToken = "floyd"
+
+# Listen on LAN for Jenny (--share). false = only Erik on this PC (127.0.0.1).
+$ListenShare = $false
+
+# Port (default 8642)
+# $AppPort = 8642
