@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Månadskostnad — Bostadsköp{% endblock %}
+{% block content %}
+<h1>Månadskostnad</h1>
+<p class="lead">Förenklad kalkyl med bolån, avgift och ränteavdrag. Standardvärden för Diligensvägen 4.</p>
+
+<form id="cost-form" class="card form-grid">
+  <label>
+    Köpeskilling (kr)
+    <input type="number" name="price" value="{{ defaults.price }}" min="1" required>
+  </label>
+  <label>
+    Kontantinsats (kr)
+    <input type="number" name="down_payment" value="{{ defaults.down_payment }}" min="0" required>
+  </label>
+  <label>
+    Ränta (%)
+    <input type="number" name="interest_rate" value="{{ defaults.interest_rate }}" step="0.1" min="0" required>
+  </label>
+  <label>
+    Avgift (kr/mån)
+    <input type="number" name="monthly_fee" value="{{ defaults.monthly_fee }}" min="0" required>
+  </label>
+  <label>
+    Drift (kr/mån)
+    <input type="number" name="operating_costs" value="{{ defaults.operating_costs }}" min="0" required>
+  </label>
+  <div class="form-actions">
+    <button type="submit" class="button primary">Beräkna</button>
+  </div>
+</form>
+
+<div id="cost-result" class="card" hidden></div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/monthly_cost.js"></script>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Bostadsköp — Erik &amp; Jenny{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">Bostadsköp</a>
+      <nav>
+        <a href="/">Start</a>
+        <a href="/app">Objekt</a>
+        <a href="/app/kostnad">Månadskostnad</a>
+        <a href="/docs" target="_blank" rel="noopener">API</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer wrap">
+    <p>Lokal assistent för Erik &amp; Jenny — ingen inloggning, data stannar på din dator.</p>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

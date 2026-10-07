@@ -19,6 +19,9 @@ uv run python scripts/init_db.py           # create data/apartment.db and load s
 uv run python scripts/serve.py --reload    # serves on http://127.0.0.1:8642
 ```
 
+Open **http://127.0.0.1:8642/app** in your browser for the web UI (listings, utvärdering, månadskostnad).
+The start page is http://127.0.0.1:8642/ — API docs remain at `/docs`.
+
 ### Workflow: one listing
 
 After you pull changes that update `db/seed.sql` (e.g. a new object like Diligensvägen 4), refresh your local DB and start the API. **Run each line separately** — never paste documentation arrows (`→`) or chained commands as a single shell line (e.g. `git pull uv run ... --reset` will break).
@@ -64,7 +67,9 @@ uv run pytest
 | `db/seed.sql` | Swedish BRF/bostadsrätt tips plus example criteria and neighborhoods (idempotent) |
 | `docs/brf-evaluation-guide.md` | Practical BRF evaluation guide (årsredovisning, thresholds, flags) |
 | `app/main.py` | FastAPI app factory |
-| `app/routers/` | One router per resource, plus `calculations` |
+| `app/routers/` | One router per resource, plus `calculations` and `ui` |
+| `templates/` | Jinja2 HTML for the browser UI |
+| `static/` | CSS and client JS for `/app` |
 | `scripts/init_db.py` | Create/seed the database |
 | `scripts/serve.py` | Run the API (`--port` / `APP_PORT`, default 8642) |
 | `tests/` | pytest suite (uses a temporary database) |

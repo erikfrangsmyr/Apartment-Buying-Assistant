@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Objekt — Bostadsköp{% endblock %}
+{% block content %}
+<h1>Sparade objekt</h1>
+<p class="lead">Klicka på en rad för att se detaljer och köra utvärdering mot era köpkriterier.</p>
+
+{% if listings %}
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Adress</th>
+      <th>Pris</th>
+      <th>Avgift</th>
+      <th>Rum</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for l in listings %}
+    <tr class="clickable" onclick="location.href='/app/listings/{{ l.id }}'">
+      <td>{{ l.address }}</td>
+      <td>{{ l.price_fmt }}</td>
+      <td>{{ l.fee_fmt }}</td>
+      <td>{% if l.rooms %}{{ l.rooms }}{% else %}—{% endif %}</td>
+      <td><span class="pill">{{ l.status_label }}</span></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">Inga objekt ännu. Lägg till via API eller seed-data.</p>
+{% endif %}
+{% endblock %}

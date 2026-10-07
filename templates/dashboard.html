@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Start — Bostadsköp{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Bostadsköp</h1>
+  <p class="lead">Hjälp att jämföra bostadsrätter, BRF och månadskostnad — byggt för Erik och Jenny.</p>
+</section>
+
+<section class="card status-card">
+  <h2>Systemstatus</h2>
+  <p class="health {% if health.status == 'ok' %}health-ok{% else %}health-bad{% endif %}">
+    API: <strong>{{ health.status }}</strong>
+  </p>
+</section>
+
+<section class="card actions">
+  <h2>Gå vidare</h2>
+  <ul class="link-list">
+    <li><a class="button primary" href="/app">Visa sparade objekt</a></li>
+    <li><a class="button" href="/app/kostnad">Räkna månadskostnad</a></li>
+  </ul>
+</section>
+{% endblock %}
