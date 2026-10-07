@@ -7,11 +7,21 @@ from fastapi.templating import Jinja2Templates
 
 from app.db import fetch_all, fetch_one, get_db
 from app.listing_compare import INTEREST_BADGE, find_default_compare_ids
+from app.share_auth import resolve_share_token
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 templates = Jinja2Templates(directory=str(ROOT / "templates"))
 
 router = APIRouter(tags=["ui"])
+
+
+def _page_context(request: Request, **extra):
+    return {
+        "share_mode": getattr(request.app.state, "share_mode", False),
+        "share_token_required": bool(resolve_share_token(request)),
+        **extra,
+    }
+
 
 STATUS_LABELS = {
     "watching": "Bevakar",
@@ -32,7 +42,7 @@ def dashboard(request: Request):
     return templates.TemplateResponse(
         request,
         "dashboard.html",
-        {"health": {"status": "ok"}},
+        _page_context(request, health={"status": "ok"}),
     )
 
 
@@ -48,7 +58,9 @@ def app_listings(request: Request, conn: sqlite3.Connection = Depends(get_db)):
         row["status_label"] = STATUS_LABELS.get(row.get("status"), row.get("status"))
         row["price_fmt"] = _format_sek(row.get("price"))
         row["fee_fmt"] = _format_sek(row.get("monthly_fee"))
-    return templates.TemplateResponse(request, "listings.html", {"listings": listings})
+    return templates.TemplateResponse(
+        request, "listings.html", _page_context(request, listings=listings)
+    )
 
 
 @router.get("/app/listings/{listing_id}")
@@ -61,7 +73,9 @@ def app_listing_detail(
     listing["status_label"] = STATUS_LABELS.get(listing.get("status"), listing.get("status"))
     listing["price_fmt"] = _format_sek(listing.get("price"))
     listing["fee_fmt"] = _format_sek(listing.get("monthly_fee"))
-    return templates.TemplateResponse(request, "listing_detail.html", {"listing": listing})
+    return templates.TemplateResponse(
+        request, "listing_detail.html", _page_context(request, listing=listing)
+    )
 
 
 INTEREST_LABELS = {
@@ -91,11 +105,12 @@ def compare_page(request: Request, conn: sqlite3.Connection = Depends(get_db)):
     return templates.TemplateResponse(
         request,
         "compare.html",
-        {
-            "listings": listings,
-            "default_ids": default_ids,
-            "show_watchlist_hint": only_seed,
-        },
+        _page_context(
+            request,
+            listings=listings,
+            default_ids=default_ids,
+            show_watchlist_hint=only_seed,
+        ),
     )
 
 
@@ -108,4 +123,6 @@ def monthly_cost_page(request: Request):
         "monthly_fee": 5_927,
         "operating_costs": 800,
     }
-    return templates.TemplateResponse(request, "monthly_cost.html", {"defaults": defaults})
+    return templates.TemplateResponse(
+        request, "monthly_cost.html", _page_context(request, defaults=defaults)
+    )

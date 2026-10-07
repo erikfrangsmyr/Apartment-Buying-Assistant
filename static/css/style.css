@@ -84,6 +84,27 @@ main {
   border-top: 1px solid var(--border);
 }
 
+.share-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+}
+
+.share-footer h2 {
+  font-size: 0.95rem;
+  margin: 0 0 0.35rem;
+  color: var(--text);
+}
+
+.share-hint {
+  margin: 0 0 0.75rem;
+}
+
+.share-status {
+  margin: 0.5rem 0 0;
+  color: var(--ok);
+}
+
 h1 {
   font-size: clamp(1.5rem, 4vw, 1.85rem);
   margin: 0 0 0.5rem;
