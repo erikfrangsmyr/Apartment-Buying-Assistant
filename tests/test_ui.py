@@ -5,6 +5,15 @@ def test_app_listings_page(client):
     assert "Sparade objekt" in res.text
 
 
+def test_listing_detail_edit_form(client):
+    listings = client.get("/listings").json()
+    diligens = next(l for l in listings if l["address"] == "Diligensvägen 4")
+    res = client.get(f"/app/listings/{diligens['id']}")
+    assert res.status_code == 200
+    assert "Redigera objekt" in res.text
+    assert 'id="listing-edit-form"' in res.text
+
+
 def test_dashboard(client):
     res = client.get("/")
     assert res.status_code == 200

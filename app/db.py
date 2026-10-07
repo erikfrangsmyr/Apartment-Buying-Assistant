@@ -68,6 +68,28 @@ def fetch_one(
     return row_to_dict(row, json_fields)
 
 
+def update(
+    conn: sqlite3.Connection,
+    table: str,
+    row_id: int,
+    values: dict[str, Any],
+) -> None:
+    if not values:
+        return
+    columns = ", ".join(f"{k} = ?" for k in values)
+    try:
+        cur = conn.execute(
+            f"UPDATE {table} SET {columns} WHERE id = ?",
+            list(values.values()) + [row_id],
+        )
+        conn.commit()
+    except sqlite3.IntegrityError as exc:
+        conn.rollback()
+        raise HTTPException(status_code=409, detail=f"Constraint failed: {exc}") from exc
+    if cur.rowcount == 0:
+        raise HTTPException(status_code=404, detail=f"{table} {row_id} not found")
+
+
 def fetch_all(
     conn: sqlite3.Connection,
     table: str,

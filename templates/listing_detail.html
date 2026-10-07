@@ -23,6 +23,67 @@
 </section>
 
 <section class="card">
+  <h2>Redigera objekt</h2>
+  <p class="muted">Uppdatera fakta från visning eller mäklarens sida. Sparas direkt i databasen.</p>
+  <form id="listing-edit-form" class="form-grid" data-listing-id="{{ listing.id }}">
+    <label>
+      Adress
+      <input name="address" type="text" required value="{{ listing.address }}" autocomplete="street-address">
+    </label>
+    <label>
+      Pris (kr)
+      <input name="price" type="number" min="0" step="1000" value="{{ listing.price if listing.price is not none else '' }}" inputmode="numeric">
+    </label>
+    <label>
+      Avgift (kr/mån)
+      <input name="monthly_fee" type="number" min="0" step="100" value="{{ listing.monthly_fee if listing.monthly_fee is not none else '' }}" inputmode="numeric">
+    </label>
+    <label>
+      Rum
+      <input name="rooms" type="number" min="0" step="0.5" value="{{ listing.rooms if listing.rooms is not none else '' }}" inputmode="decimal">
+    </label>
+    <label>
+      Boarea (kvm)
+      <input name="area_sqm" type="number" min="0" step="0.1" value="{{ listing.area_sqm if listing.area_sqm is not none else '' }}" inputmode="decimal">
+    </label>
+    <label>
+      Våning
+      <input name="floor" type="number" step="1" value="{{ listing.floor if listing.floor is not none else '' }}" inputmode="numeric">
+    </label>
+    <label>
+      Intresse
+      <select name="interest">
+        <option value="" {% if not listing.interest %}selected{% endif %}>—</option>
+        <option value="love" {% if listing.interest == 'love' %}selected{% endif %}>Älskar ❤</option>
+        <option value="interested" {% if listing.interest == 'interested' %}selected{% endif %}>Intressant</option>
+        <option value="skip" {% if listing.interest == 'skip' %}selected{% endif %}>Hoppa över</option>
+      </select>
+    </label>
+    <label>
+      Status
+      <select name="status">
+        <option value="watching" {% if listing.status == 'watching' %}selected{% endif %}>Bevakar</option>
+        <option value="viewed" {% if listing.status == 'viewed' %}selected{% endif %}>Besökt</option>
+        <option value="bid" {% if listing.status == 'bid' %}selected{% endif %}>Bud</option>
+        <option value="rejected" {% if listing.status == 'rejected' %}selected{% endif %}>Avvisad</option>
+      </select>
+    </label>
+    <label class="full-width">
+      Mäklarlänk
+      <input name="url" type="url" value="{{ listing.url or '' }}" placeholder="https://…" inputmode="url" autocomplete="url">
+    </label>
+    <label class="full-width">
+      Anteckningar
+      <textarea name="notes" rows="4">{{ listing.notes or '' }}</textarea>
+    </label>
+    <div class="form-actions">
+      <button type="submit" class="button primary" id="btn-save-listing">Spara</button>
+      <span id="edit-status" class="muted" hidden></span>
+    </div>
+  </form>
+</section>
+
+<section class="card">
   <h2>Utvärdering</h2>
   <p>Jämför objektet mot era hårda och mjuka kriterier samt BRF-data om det finns.</p>
   <button type="button" class="button primary" id="btn-evaluate" data-listing-id="{{ listing.id }}">

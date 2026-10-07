@@ -50,3 +50,16 @@ uv run python scripts/serve.py
 ```
 
 `--reset` drops and recreates tables, then reloads `db/seed.sql`.
+
+## Enrich listings from mäklare (Booli → broker)
+
+Booli often blocks automated HTTP (Cloudflare 403). The enrich script still works when `url` already points at a mäklare page, or after you paste the broker link in the web UI.
+
+```bash
+uv run python scripts/import_watchlist.py
+uv run python scripts/enrich_listings.py --interest love
+uv run python scripts/enrich_listings.py --all-missing
+uv run python scripts/enrich_listings.py --id 5
+```
+
+Edit a single listing in the browser at `/app/listings/{id}` (Swedish form) or via `PATCH /listings/{id}`. Optional API: `POST /listings/{id}/enrich`.
