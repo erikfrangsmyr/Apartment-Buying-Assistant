@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 TipCategory = Literal["brf_finance", "renovation", "legal", "viewing", "cost", "negotiation"]
 RenovationKind = Literal["roof", "facade", "stambyte", "windows", "elevator", "other"]
 ListingStatus = Literal["watching", "viewed", "bid", "rejected"]
+ListingInterest = Literal["love", "interested", "skip"]
 
 
 class TipCreate(BaseModel):
@@ -140,6 +141,7 @@ class ListingCreate(BaseModel):
     monthly_fee: int | None = Field(default=None, ge=0, description="Avgift per month")
     floor: int | None = None
     status: ListingStatus = "watching"
+    interest: ListingInterest | None = None
     notes: str | None = None
 
 

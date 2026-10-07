@@ -184,7 +184,7 @@ WHERE a.org_number = '716418-6871'
 
 INSERT INTO listings (
     association_id, neighborhood_id, address, url, price, rooms, area_sqm,
-    monthly_fee, floor, status, notes
+    monthly_fee, floor, status, interest, notes
 )
 SELECT
     a.id,
@@ -197,7 +197,8 @@ SELECT
     5927,
     2,
     'watching',
-    'Jarlaberg. Utgångspris 3 495 000 kr. Visningar 11–12 okt 2026 (Länsfäst). Inglasad balkong, vindsförråd, våning 2/3 hiss.'
+    'interested',
+    'Jarlaberg. Utgångspris 3 495 000 kr. Visningar 11–12 okt 2026 (Länsfäst). Inglasad balkong, vindsförråd, våning 2/3 hiss. Booli: https://www.booli.se/bostad/4209955'
 FROM associations a
 CROSS JOIN neighborhoods n
 WHERE a.org_number = '716418-6871'

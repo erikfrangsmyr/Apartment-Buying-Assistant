@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS listings (
     monthly_fee      INTEGER CHECK (monthly_fee >= 0),
     floor            INTEGER,
     status           TEXT    NOT NULL DEFAULT 'watching' CHECK (status IN ('watching', 'viewed', 'bid', 'rejected')),
+    interest         TEXT    CHECK (interest IS NULL OR interest IN ('love', 'interested', 'skip')),
     notes            TEXT,
     created_at       TEXT    NOT NULL DEFAULT (datetime('now'))
 );
