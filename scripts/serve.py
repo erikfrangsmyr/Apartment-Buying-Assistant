@@ -35,17 +35,19 @@ def _lan_ipv4_addresses() -> list[str]:
     except OSError:
         pass
 
-    try:
-        for _index, name in socket.if_nameindex():
-            try:
-                for info in socket.getaddrinfo(name, None, socket.AF_INET):
-                    ip = info[4][0]
-                    if not ip.startswith("127."):
-                        addrs.add(ip)
-            except OSError:
-                continue
-    except (AttributeError, OSError):
-        pass
+    # Per-interface getaddrinfo can hang for minutes on Windows.
+    if sys.platform != "win32":
+        try:
+            for _index, name in socket.if_nameindex():
+                try:
+                    for info in socket.getaddrinfo(name, None, socket.AF_INET):
+                        ip = info[4][0]
+                        if not ip.startswith("127."):
+                            addrs.add(ip)
+                except OSError:
+                    continue
+        except (AttributeError, OSError):
+            pass
 
     return sorted(addrs)
 
@@ -93,6 +95,7 @@ def main() -> None:
     if args.share:
         _print_share_banner(args.host, args.port)
 
+    print(f"Startar server på {args.host}:{args.port} …")
     uvicorn.run("app.main:app", host=args.host, port=args.port, reload=args.reload, app_dir=str(ROOT))
 
 
