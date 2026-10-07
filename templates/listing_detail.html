@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ listing.address }} — Bostadsköp{% endblock %}
+{% block content %}
+<p class="back"><a href="/app">← Tillbaka till listan</a></p>
+
+<h1>{{ listing.address }}</h1>
+
+<section class="card detail-grid">
+  <dl>
+    <dt>Pris</dt><dd>{{ listing.price_fmt }}</dd>
+    <dt>Avgift</dt><dd>{{ listing.fee_fmt }}/mån</dd>
+    <dt>Rum</dt><dd>{% if listing.rooms %}{{ listing.rooms }}{% else %}—{% endif %}</dd>
+    <dt>Yta</dt><dd>{% if listing.area_sqm %}{{ listing.area_sqm }} kvm{% else %}—{% endif %}</dd>
+    <dt>Våning</dt><dd>{% if listing.floor is not none %}{{ listing.floor }}{% else %}—{% endif %}</dd>
+    <dt>Status</dt><dd><span class="pill">{{ listing.status_label }}</span></dd>
+  </dl>
+  {% if listing.url %}
+  <p><a href="{{ listing.url }}" target="_blank" rel="noopener">Öppna annons</a></p>
+  {% endif %}
+  {% if listing.notes %}
+  <p class="notes">{{ listing.notes }}</p>
+  {% endif %}
+</section>
+
+<section class="card">
+  <h2>Utvärdering</h2>
+  <p>Jämför objektet mot era hårda och mjuka kriterier samt BRF-data om det finns.</p>
+  <button type="button" class="button primary" id="btn-evaluate" data-listing-id="{{ listing.id }}">
+    Utvärdera
+  </button>
+  <div id="evaluate-status" class="muted" hidden></div>
+  <div id="evaluate-result" hidden></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/listing_detail.js"></script>
+{% endblock %}
