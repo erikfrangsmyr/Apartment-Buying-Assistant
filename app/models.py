@@ -161,6 +161,30 @@ class Evaluation(EvaluationCreate):
     created_at: str
 
 
+class CriterionResult(BaseModel):
+    criterion_id: int
+    name: str
+    kind: Literal["hard", "soft"]
+    field: str
+    status: Literal["pass", "fail", "unverified"]
+    detail: str | None = None
+    weight: int
+
+
+class ListingEvaluateResponse(BaseModel):
+    listing_id: int
+    criteria_score: float = Field(ge=0, le=100)
+    hard_criteria_met: bool
+    criteria_results: list[CriterionResult]
+    unverified: list[str]
+    brf_assessment: AssociationAssessResponse | None = None
+    summary: str
+    red_flags: list[str]
+    evaluation_id: int | None = Field(
+        default=None, description="Set when the result was persisted to evaluations"
+    )
+
+
 class MonthlyCostRequest(BaseModel):
     price: int = Field(gt=0, description="Purchase price (kr)")
     down_payment: int = Field(ge=0, description="Kontantinsats (kr)")

@@ -49,7 +49,9 @@ def test_json_columns_validated(conn):
 
 
 def test_renovations_cascade_with_association(conn):
-    conn.execute("INSERT INTO associations (id, name) VALUES (1, 'BRF Test')")
-    conn.execute("INSERT INTO renovations (association_id, kind, status) VALUES (1, 'stambyte', 'done')")
-    conn.execute("DELETE FROM associations WHERE id = 1")
-    assert conn.execute("SELECT COUNT(*) FROM renovations").fetchone()[0] == 0
+    conn.execute("INSERT INTO associations (id, name) VALUES (9999, 'BRF Test')")
+    conn.execute("INSERT INTO renovations (association_id, kind, status) VALUES (9999, 'stambyte', 'done')")
+    conn.execute("DELETE FROM associations WHERE id = 9999")
+    assert conn.execute(
+        "SELECT COUNT(*) FROM renovations WHERE association_id = 9999"
+    ).fetchone()[0] == 0
