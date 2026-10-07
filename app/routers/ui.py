@@ -6,6 +6,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 
 from app.db import fetch_all, fetch_one, get_db
+from app.listing_compare import INTEREST_BADGE, find_default_compare_ids
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 templates = Jinja2Templates(directory=str(ROOT / "templates"))
@@ -61,6 +62,41 @@ def app_listing_detail(
     listing["price_fmt"] = _format_sek(listing.get("price"))
     listing["fee_fmt"] = _format_sek(listing.get("monthly_fee"))
     return templates.TemplateResponse(request, "listing_detail.html", {"listing": listing})
+
+
+INTEREST_LABELS = {
+    "love": "Älskar",
+    "interested": "Intressant",
+    "skip": "Hoppa över",
+}
+
+
+@router.get("/app/jamfor")
+def compare_page(request: Request, conn: sqlite3.Connection = Depends(get_db)):
+    listings = fetch_all(conn, "listings", {}, order_by="created_at DESC, id DESC")
+    tier_rank = {"love": 0, "interested": 1, "skip": 2}
+    listings.sort(
+        key=lambda r: (tier_rank.get(r.get("interest"), 9), r.get("address") or ""),
+    )
+    for row in listings:
+        interest = row.get("interest")
+        badge = INTEREST_BADGE.get(interest, "") if interest else ""
+        row["interest_badge"] = badge
+        row["interest_label"] = INTEREST_LABELS.get(interest, "") if interest else ""
+        row["price_fmt"] = _format_sek(row.get("price"))
+    default_ids = find_default_compare_ids(conn)
+    only_seed = len(listings) < 10 and not any(
+        (l.get("address") or "").startswith("Booli") for l in listings
+    )
+    return templates.TemplateResponse(
+        request,
+        "compare.html",
+        {
+            "listings": listings,
+            "default_ids": default_ids,
+            "show_watchlist_hint": only_seed,
+        },
+    )
 
 
 @router.get("/app/kostnad")

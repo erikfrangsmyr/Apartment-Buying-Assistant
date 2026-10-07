@@ -73,7 +73,26 @@ def _compare(operator: str, actual: Any, expected: Any) -> bool:
     return False
 
 
-def _listing_context(listing: dict[str, Any], neighborhood: dict[str, Any] | None) -> dict[str, Any]:
+def infer_fields_from_notes(notes: str | None) -> dict[str, Any]:
+    """Best-effort flags from mäklare/Booli notes (shared with jämför-vyn)."""
+    if not notes:
+        return {}
+    lower = notes.lower()
+    inferred: dict[str, Any] = {}
+    if "balkong" in lower:
+        inferred["outdoor_space"] = "balcony"
+    elif "uteplats" in lower:
+        inferred["outdoor_space"] = "patio"
+    if "diskmaskin" in lower:
+        inferred["has_dishwasher"] = True
+    if "tvättmaskin" in lower:
+        inferred["has_washing_machine"] = True
+    if "förråd" in lower or "vindsförråd" in lower:
+        inferred["external_storage_possible"] = True
+    return inferred
+
+
+def listing_context(listing: dict[str, Any], neighborhood: dict[str, Any] | None) -> dict[str, Any]:
     ctx: dict[str, Any] = {
         "area_sqm": listing.get("area_sqm"),
         "rooms": listing.get("rooms"),
@@ -89,10 +108,17 @@ def _listing_context(listing: dict[str, Any], neighborhood: dict[str, Any] | Non
     floor = listing.get("floor")
     if floor is not None:
         ctx["is_basement"] = floor < 1
+    for key, value in infer_fields_from_notes(listing.get("notes")).items():
+        if ctx.get(key) is None:
+            ctx[key] = value
     return ctx
 
 
-def _criterion_status(
+def _listing_context(listing: dict[str, Any], neighborhood: dict[str, Any] | None) -> dict[str, Any]:
+    return listing_context(listing, neighborhood)
+
+
+def criterion_status(
     field: str, operator: str, expected_raw: str, ctx: dict[str, Any]
 ) -> tuple[CriterionStatus, str | None]:
     if field not in FIELD_MAP:
@@ -107,6 +133,12 @@ def _criterion_status(
     if _compare(operator, actual, expected):
         return "pass", None
     return "fail", f"Uppfyller inte: {actual!r} mot krav {expected!r} ({operator})."
+
+
+def _criterion_status(
+    field: str, operator: str, expected_raw: str, ctx: dict[str, Any]
+) -> tuple[CriterionStatus, str | None]:
+    return criterion_status(field, operator, expected_raw, ctx)
 
 
 def _criteria_score(rows: list[dict[str, Any]]) -> float:

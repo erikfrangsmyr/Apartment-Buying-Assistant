@@ -33,7 +33,7 @@ def test_import_watchlist_inserts_and_is_idempotent(conn: sqlite3.Connection, tm
             {
                 "area_label": "Jarlaberg",
                 "id_type": "annons",
-                "id": "6252361",
+                "id": "9999999",
                 "interest": "love",
             },
         ],
