@@ -1,0 +1,44 @@
+{
+  "source": "Erik & Jenny Booli watchlist (2026-10-07)",
+  "listings": [
+    {"area_label": "Jarlaberg", "id_type": "bostad", "id": "588934", "interest": "skip"},
+    {"area_label": "Jarlaberg", "id_type": "annons", "id": "6252361", "interest": "love"},
+    {"area_label": "Jarlaberg", "id_type": "bostad", "id": "4214008", "interest": "love"},
+    {"area_label": "Jarlaberg", "id_type": "bostad", "id": "4209784", "interest": "love"},
+    {"area_label": "Nacka forum", "id_type": "bostad", "id": "76274", "interest": "interested"},
+    {"area_label": "Henriksdal", "id_type": "bostad", "id": "433914", "interest": "interested"},
+    {"area_label": "Henriksdal", "id_type": "bostad", "id": "433519", "interest": "love"},
+    {"area_label": "Henriksdal", "id_type": "annons", "id": "6176054", "interest": "interested"},
+    {"area_label": "Kärrtorp", "id_type": "bostad", "id": "348073", "interest": "love"},
+    {"area_label": "Kärrtorp", "id_type": "annons", "id": "5953338", "interest": "interested"},
+    {"area_label": "Kärrtorp", "id_type": "annons", "id": "6255366", "interest": "interested"},
+    {"area_label": "Enskede dalen", "id_type": "annons", "id": "6288132", "interest": "love"},
+    {"area_label": "Enskede dalen", "id_type": "annons", "id": "4685973", "interest": "interested"},
+    {"area_label": "Enskede dalen", "id_type": "annons", "id": "6285120", "interest": "skip"},
+    {"area_label": "Gubbängen", "id_type": "bostad", "id": "590535", "interest": "interested"},
+    {"area_label": "Gubbängen", "id_type": "annons", "id": "4807832", "interest": "interested"},
+    {"area_label": "Gubbängen", "id_type": "annons", "id": "6273567", "interest": "skip"},
+    {"area_label": "Årsta", "id_type": "annons", "id": "6244354", "interest": "interested"},
+    {"area_label": "Årsta", "id_type": "bostad", "id": "719586", "interest": "interested"},
+    {"area_label": "Årsta", "id_type": "bostad", "id": "719570", "interest": "interested"},
+    {"area_label": "Årsta", "id_type": "bostad", "id": "719561", "interest": "skip"},
+    {"area_label": "Årsta", "id_type": "bostad", "id": "719269", "interest": "skip"},
+    {"area_label": "Årstaberg", "id_type": "bostad", "id": "750424", "interest": "interested"},
+    {"area_label": "Hammarbyhöjden", "id_type": "annons", "id": "5955082", "interest": "love"},
+    {"area_label": "Hammarbyhöjden", "id_type": "bostad", "id": "692786", "interest": "love"},
+    {"area_label": "Hammarbyhöjden", "id_type": "annons", "id": "5955173", "interest": "interested"},
+    {"area_label": "Hammarbyhöjden", "id_type": "annons", "id": "5954597", "interest": "interested"},
+    {"area_label": "Ekudden", "id_type": "bostad", "id": "3944313", "interest": "love"},
+    {"area_label": "Finntorp", "id_type": "annons", "id": "6143451", "interest": "love"},
+    {"area_label": "Finntorp", "id_type": "annons", "id": "5953780", "interest": "love"},
+    {"area_label": "Bromma", "id_type": "annons", "id": "6176356", "interest": "interested"},
+    {"area_label": "Svedmyra", "id_type": "bostad", "id": "330819", "interest": "skip"}
+  ],
+  "address_matches": [
+    {
+      "address": "Diligensvägen 4",
+      "interest": "interested",
+      "notes_append": "Booli watchlist sibling to Jarlaberg ❤ listings; visning 11–12 okt 2026."
+    }
+  ]
+}

@@ -16,6 +16,7 @@ Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) (`pip install uv`). W
 ```bash
 uv sync                                    # install dependencies
 uv run python scripts/init_db.py           # create data/apartment.db and load seed data
+uv run python scripts/import_watchlist.py  # optional: load Booli URLs from db/watchlist.json
 uv run python scripts/serve.py --reload    # serves on http://127.0.0.1:8642
 ```
 
